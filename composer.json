@@ -1,0 +1,23 @@
+
+{
+    "name": "ze-it/smseagle-sdk-php",
+    "description": "smseagle sdk",
+    "type": "library",
+    "version": "dev-master",
+    "keywords": ["smseagle", "sms", "api"],
+    "authors": [
+        {
+            "name": "Tomasz Tokarski",
+            "email": "tomasz.tokarski@ze-it.pl"
+        }
+    ],
+    "require": {
+        "php": ">=5.6.0",
+        "ext-simplexml": "*",
+    },
+    "autoload": {
+        "psr-4": {
+            "Zeit\\SmsEagle\\": "src"
+        }
+    }
+} 
