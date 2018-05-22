@@ -1,4 +1,3 @@
-
 {
     "name": "ze-it/smseagle-sdk-php",
     "description": "smseagle sdk",
@@ -13,11 +12,11 @@
     ],
     "require": {
         "php": ">=5.6.0",
-        "ext-simplexml": "*",
+        "ext-simplexml": "*"
     },
     "autoload": {
         "psr-4": {
             "Zeit\\SmsEagle\\": "src"
         }
     }
-} 
+}
