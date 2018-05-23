@@ -2,7 +2,6 @@
     "name": "ze-it/smseagle-sdk-php",
     "description": "smseagle sdk",
     "type": "library",
-    "version": "dev-master",
     "keywords": ["smseagle", "sms", "api"],
     "authors": [
         {
