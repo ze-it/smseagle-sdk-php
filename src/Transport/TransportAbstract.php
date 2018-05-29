@@ -5,6 +5,7 @@ namespace Zeit\SmsEagle\Transport;
 use Zeit\SmsEagle\Helper\ConfigTrait;
 use Zeit\SmsEagle\Request\BaseRequest;
 use Zeit\SmsEagle\Response\Type\TypeInterface;
+use Zeit\SmsEagle\Exception\ResponseTypeNotSupportedException;
 
 abstract class TransportAbstract
 {
@@ -52,12 +53,14 @@ abstract class TransportAbstract
     }
 
     /**
-     * @param  TypeInterface $response
+     * @param TypeInterface $response
+     *
+     * @throws ResponseTypeNotSupportedException
      */
     public function setResponse(TypeInterface $response)
     {
         if ($this->isResponseAllowed($response)) {
-            throw new \Exception("Response not supported");
+            throw new ResponseTypeNotSupportedException("Response type not supported for this transport");
         }
 
         $this->response = $response;

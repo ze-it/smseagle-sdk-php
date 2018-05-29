@@ -26,7 +26,7 @@ class Http extends TransportAbstract
         $this->prepareRequest($request);
 
         $handle = curl_init();
-        $curlOptions = isset($this->config['options']['curl']) ? $this->config['options']['curl'] : [];
+        $curlOptions = $this->getConfig('options.curl', []);
 
         curl_setopt_array($handle, $curlOptions);
         curl_setopt_array($handle, [

@@ -26,7 +26,7 @@ class JsonRPC extends TransportAbstract
         $this->prepareRequest($request);
 
         $handle = curl_init();
-        $curlOptions = isset($this->config['options']['curl']) ? $this->config['options']['curl'] : [];
+        $curlOptions = $this->getConfig('options.curl', []);
 
         $fields = json_encode([
             'method' => $request->getMethod(),

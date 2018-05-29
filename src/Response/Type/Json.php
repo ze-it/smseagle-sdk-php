@@ -3,6 +3,8 @@
 namespace Zeit\SmsEagle\Response\Type;
 
 use Zeit\SmsEagle\Response\Sms;
+use Zeit\SmsEagle\Exception\AuthErrorException;
+use Zeit\SmsEagle\Exception\ResponseErrorException;
 
 class Json implements TypeInterface
 {
@@ -26,7 +28,14 @@ class Json implements TypeInterface
      */
     public function parse($data, $method)
     {
-        $this->data = json_decode($data, true)['result'];
+        $this->data = json_decode($data, true);
+
+        if (isset($this->data['result'])) {
+            // Documentation says that it also wraps error fields in result JSON object
+            // {"result": {"error_text":"Invalid login or password","status":"error"}}
+            //  but in fact it does not...
+            $this->data = $this->data['result'];
+        }
 
         return $this->convert($method);
     }
@@ -37,6 +46,8 @@ class Json implements TypeInterface
      */
     protected function convert($method)
     {
+        $this->checkForErrors();
+
         switch ($method) {
             case 'sms.send_sms':
             case 'sms.send_togroup':
@@ -66,6 +77,27 @@ class Json implements TypeInterface
     }
 
     /**
+     * @return void
+     *
+     * @throws AuthErrorException
+     * @throws ResponseErrorException
+     */
+    protected function checkForErrors()
+    {
+        if (isset($this->data['error_text'])) {
+            if ('No data to display' === $this->data['error_text']) {
+                return;
+            }
+
+            if ('Invalid login or password' === $this->data['error_text']) {
+                throw new AuthErrorException($this->data['error_text']);
+            }
+
+            throw new ResponseErrorException($this->data['error_text']);
+        }
+    }
+
+    /**
      * @return int[]
      */
     protected function convertSmsSendResponse()
@@ -82,7 +114,9 @@ class Json implements TypeInterface
      */
     protected function convertSmsListFolderResponse()
     {
-        if (isset($this->data['error_text']) && $this->data['error_text'] === 'No data to display') {
+        if (isset($this->data['error_text'])
+            && 'No data to display' === $this->data['error_text']
+        ) {
             return [];
         }
 
@@ -100,7 +134,7 @@ class Json implements TypeInterface
      */
     protected function convertSmsDeleteResponse()
     {
-        return ($this->data['status'] === 'ok') ? true : false;
+        return ('ok' === $this->data['status']) ? true : false;
     }
 
     /**

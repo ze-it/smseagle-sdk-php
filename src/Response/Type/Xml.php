@@ -3,6 +3,8 @@
 namespace Zeit\SmsEagle\Response\Type;
 
 use Zeit\SmsEagle\Response\Sms;
+use Zeit\SmsEagle\Exception\AuthErrorException;
+use Zeit\SmsEagle\Exception\ResponseErrorException;
 
 class Xml implements TypeInterface
 {
@@ -37,6 +39,8 @@ class Xml implements TypeInterface
      */
     protected function convert($method)
     {
+        $this->checkForErrors();
+
         switch ($method) {
             case 'sms.send_sms':
             case 'sms.send_togroup':
@@ -66,6 +70,30 @@ class Xml implements TypeInterface
     }
 
     /**
+     * @return void
+     *
+     * @throws AuthErrorException
+     * @throws ResponseErrorException
+     */
+    protected function checkForErrors()
+    {
+
+        if (isset($this->data->error_text)) {
+            $error = $this->data->error_text->__toString();
+
+            if ('No data to display' === $error) {
+                return;
+            }
+
+            if ('Invalid login or password' === $error) {
+                throw new AuthErrorException($error);
+            }
+
+            throw new ResponseErrorException($error);
+        }
+    }
+
+    /**
      * @return int[]
      */
     protected function convertSendSmsResponse()
@@ -82,7 +110,9 @@ class Xml implements TypeInterface
      */
     protected function convertSmsReadResponse()
     {
-        if (isset($this->data->error_text) && $this->data->error_text->__toString() === 'No data to display') {
+        if (isset($this->data->error_text)
+            && 'No data to display' === $this->data->error_text->__toString()
+        ) {
             return [];
         }
 

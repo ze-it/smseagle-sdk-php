@@ -3,6 +3,7 @@
 namespace Zeit\SmsEagle\Api\Factory;
 
 use Zeit\SmsEagle\Api;
+use Zeit\SmsEagle\Exception\NoSuchNamespaceFoundException;
 
 class MapFactory implements FactoryInterface
 {
@@ -39,23 +40,21 @@ class MapFactory implements FactoryInterface
      * @param  string $api
      * @return boolean
      */
-    public function hasApi($api): bool
+    public function hasApi($api)
     {
         return isset($this->map[$api]);
     }
 
     /**
      * @param  string $api
-     * @throws \RuntimeException
      * @return mixed
+     *
+     * @throws NoSuchNamespaceFoundException
      */
     public function getApi($api)
     {
         if (!$this->hasApi($api)) {
-            throw new \RuntimeException(sprintf(
-                'no map defined for `%s`',
-                $api
-            ));
+            throw new NoSuchNamespaceFoundException('No api namespace found: ' . $api);
         }
 
         $class = $this->map[$api];

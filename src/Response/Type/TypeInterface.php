@@ -12,7 +12,6 @@ interface TypeInterface
     /**
      * @param  string $data
      * @param  string $method
-     *
      * @return $this
      */
     public function parse($data, $method);

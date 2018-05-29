@@ -13,3 +13,18 @@ if (!function_exists('array_only')) {
         return array_intersect_key($array, array_flip((array) $keys));
     }
 }
+
+if (!function_exists('array_get')) {
+    function array_get($array, $keys, $default = null)
+    {
+        foreach (explode('.', $keys) as $part) {
+            if (isset($array[$part])) {
+                $array = $array[$part];
+            } else {
+                return $default;
+            }
+        }
+
+        return $array;
+    }
+}

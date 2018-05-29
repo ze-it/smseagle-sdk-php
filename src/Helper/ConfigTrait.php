@@ -11,15 +11,16 @@ trait ConfigTrait
 
     /**
      * @param  string|null $field
+     * @param  mixed $default
      * @return mixed
      */
-    public function getConfig($field = null)
+    public function getConfig($field = null, $default = null)
     {
         if (null === $field) {
             return $this->config;
         }
 
-        return isset($this->config[$field]) ? $this->config[$field] : null;
+        return array_get($this->config, $field, $default);
     }
 
     /**
