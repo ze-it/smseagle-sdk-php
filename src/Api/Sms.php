@@ -68,13 +68,31 @@ class Sms extends ApiAbstract
         return $this->request(new SendBinaryRequest($params));
     }
 
-    /**
-     * @param  array  $params
-     * @return Zeit\SmsEagle\Response\Sms[]
+     /**
+     * @param  int $id
+     * @return Zeit\SmsEagle\Response\Sms|null
      */
-    public function search($params = [])
+    public function searchInboxById($id)
     {
-        return $this->request(new ListFolderRequest($params));
+        return $this->getById($id, Folder::INBOX);
+    }
+
+    /**
+     * @param  int $id
+     * @return Zeit\SmsEagle\Response\Sms|null
+     */
+    public function searchSentById($id)
+    {
+        return $this->getById($id, Folder::SENT);
+    }
+
+    /**
+     * @param  int $id
+     * @return Zeit\SmsEagle\Response\Sms|null
+     */
+    public function searchOutboxById($id)
+    {
+        return $this->getById($id, Folder::OUTBOX);
     }
 
     /**
@@ -212,5 +230,29 @@ class Sms extends ApiAbstract
     public function sentQty()
     {
         return $this->request(new SentQtyRequest());
+    }
+
+    /**
+     * @param  array  $params
+     * @return Zeit\SmsEagle\Response\Sms[]
+     */
+    protected function search($params = [])
+    {
+        return $this->request(new ListFolderRequest($params));
+    }
+
+    /**
+     * @param  int $id
+     * @param  string $folder
+     * @return Zeit\SmsEagle\Response\Sms|null
+     */
+    protected function getById($id, $folder)
+    {
+        $limit = 1;
+        $idFrom = $id;
+
+        $messages = $this->search(compact('idFrom', 'folder', 'limit'));
+
+        return empty($messages) ? null : $messages[0];
     }
 }

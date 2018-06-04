@@ -108,10 +108,10 @@ $api->sms->deleteInbox(10, 15); // true
 #### Sent
 ```php
 # delete message with given id
-$api->sms->deleteSent(102); // true
+$api->sms->deleteSent(103); // true
 
 # delete messages with given id range
-$api->sms->deleteSent(102, 105); // true
+$api->sms->deleteSent(103, 105); // true
 ```
 
 #### Outbox
@@ -132,6 +132,12 @@ $api->sms->searchSent(null, null, '555555555');// Sms[]
 
 # get up to 4 sent messages between 06/01/2018 and 06/02/2018
 $api->sms->searchSent(new DateTime('2018-06-01'), new DateTime('2018-06-02'), null, 4);// Sms[]
+
+# find sent message with id = 102
+$message = $api->sms->searchSentById(102); // Sms
+$message->getId(); // 102
+$message->getTo(); // 555555555
+$nessage->getText(); // text
 ```
 
 #### Outbox
@@ -141,19 +147,30 @@ $api->sms->searchOutbox(null, null, '555555555');// Sms[]
 
 # get up to 5 queued messages sent between 06/01/2018 and 06/02/2018
 $api->sms->searchOutbox(new DateTime('2018-06-01'), new DateTime('2018-06-02'), null, 5);// Sms[]
+
+# find queued message with id = 15
+$message = $api->sms->searchSentById(15); // null
 ```
 
 #### Inbox
 ```php
-# get all unread messages received from 555555555
+# get all incoming unread messages from 555555555
 $api->sms->searchInbox(null, null, '555555555', true);// Sms[]
 
-# get up to 6 messages received between 06/01/2018 and 06/02/2018
+# get up to 6 incoming messages received between 06/01/2018 and 06/02/2018
 $api->sms->searchInbox(new DateTime('2018-06-01'), new DateTime('2018-06-02'), null, null, 6); // Sms[]
+
+# find incoming message with id = 9
+$message = $api->sms->searchInboxById(9); // Sms
+$message->getId(9); // 9
+$message->getRead(); // true
+$message->getSentAt() // DateTime('2018-06-01')
 ```
 
-#### Response
-Methods `searchSent`, `searchOutbox`, `searchInbox` returns array of  `Zeit\SmsEagle\Response\Sms` objects. Available getters:
+#### Message response object
+Methods `searchSentById`, `searchOutboxById`, `searchInboxById` return `Zeit\SmsEagle\Response\Sms` (or null if no message with given id is not found).\
+Methods `searchSent`, `searchOutbox`, `searchInbox` returns array of  `Zeit\SmsEagle\Response\Sms` objects.\
+Available getters for `Zeit\SmsEagle\Response\Sms` object are:
 * getId() - message id (int),
 * getText() - message text/binary data (string),
 * getCoding() - message coding (string),
