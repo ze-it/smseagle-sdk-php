@@ -44,7 +44,8 @@ class Api
                 $transport = new JsonRPC($this->getConfig('transport'));
                 break;
 
-            case 'http': //no break
+            case 'http':
+            //no break
             default:
                 $transport = new Http($this->getConfig('transport'));
                 break;
