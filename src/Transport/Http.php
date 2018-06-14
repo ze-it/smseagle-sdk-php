@@ -2,6 +2,7 @@
 
 namespace Zeit\SmsEagle\Transport;
 
+use Zeit\SmsEagle\Request\BaseRequest;
 use Zeit\SmsEagle\Response\Type\Xml;
 
 class Http extends TransportAbstract
@@ -21,7 +22,7 @@ class Http extends TransportAbstract
     /**
      * @inheritdoc
      */
-    public function request($request)
+    public function request(BaseRequest $request)
     {
         $this->prepareRequest($request);
 
